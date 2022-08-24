@@ -7,13 +7,12 @@ function App() {
   const elements = useSelector(store => store.elementList)
   const [newElement, setNewElement] = useState('');
 
-  const getElements = () => {
-    axios.get('/api/element').then(response => {
-      dispatch({ type: 'SET_ELEMENTS', payload: response.data });
-    })
-      .catch(error => {
-        console.log('error with element get request', error);
-      });
+  const getElements = () => { // removing this axios get. still trigget this wil useEffect
+
+      dispatch({ // replace the entire axios with just a simple dispatch. redux holds the axios request.
+        type: 'FETCH_ELEMENTS' // if you need to get elements somewhere else, just use the same type
+      }) // redux saga watches for actions in the watcherSaga
+
   }
 
   useEffect(() => {
@@ -21,17 +20,12 @@ function App() {
   }, []);
 
   const addElement = () => {
-    axios.post('/api/element', { 
-      name: newElement
-    })
-      .then(() => {
-        getElements();
-        setNewElement('');
-      })
-      .catch(error => {
-        console.log('error with element get request', error);
-      });
 
+    dispatch({
+      type: 'ADD_ELEMENT',
+      payload: newElement
+    })
+    // clear inputs go here
   }
 
 
